@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VeyroHood — Whitelist</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #090909;
+      color: white;
+      min-height: 100vh;
+      padding: 25px 15px;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      margin-top: 30px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #999;
+      margin-top: 10px;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.04);
+    }
+
+    h2 {
+      margin-bottom: 8px;
+    }
+
+    .info {
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      background: #191919;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: white;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: black;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .requirements {
+      margin-top: 25px;
+      padding: 18px;
+      background: #0c0c0c;
+      border-radius: 12px;
+      border: 1px solid #222;
+    }
+
+    .requirements p {
+      margin: 8px 0;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #666;
+      margin-top: 30px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">VEYROHOOD</div>
+
+    <div class="subtitle">
+      Join the Hood. Secure your spot.
+    </div>
+
+    <div class="card">
+
+      <h2>Whitelist Registration</h2>
+
+      <p class="info">
+        Complete the requirements below and submit your information
+        for manual verification.
+      </p>
+
+      <form>
+
+        <label>X Username</label>
+        <input
+          type="text"
+          placeholder="@yourusername"
+          required
+        >
+
+        <label>Discord Username</label>
+        <input
+          type="text"
+          placeholder="yourdiscord"
+          required
+        >
+
+        <label>EVM Wallet Address</label>
+        <input
+          type="text"
+          placeholder="0x..."
+          required
+        >
+
+        <label>Retweet Link</label>
+        <input
+          type="url"
+          placeholder="https://x.com/..."
+          required
+        >
+
+        <label>Reply Link</label>
+        <input
+          type="url"
+          placeholder="https://x.com/..."
+          required
+        >
+
+        <button type="submit">
+          SUBMIT FOR VERIFICATION
+        </button>
+
+      </form>
+
+      <div class="requirements">
+
+        <strong>Requirements</strong>
+
+        <p>✓ Follow @VeyroHood on X</p>
+        <p>✓ Join the VeyroHood Discord</p>
+        <p>✓ Retweet the pinned post</p>
+        <p>✓ Reply to the pinned post</p>
+        <p>✓ Submit your EVM wallet</p>
+
+      </div>
+
+    </div>
+
+    <div class="footer">
+      © 2026 VeyroHood. All rights reserved.
+    </div>
+
+  </div>
+
+</body>
+  </html>
