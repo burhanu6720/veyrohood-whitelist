@@ -1,4 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>VEYROHOOD</title></head>
-<body><p>Use artifacts file - pushing full next</p></body></html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEYROHOOD — OG Verify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --lime:#c8ff2a; --card:rgba(16,16,20,.94); --line:#2a2a32; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:Outfit,sans-serif; color:#fff; min-height:100vh; background:radial-gradient(800px 380px at 20% -80px, rgba(200,255,42,.14), transparent 58%), #040406; }
+    .wrap { max-width:580px; margin:0 auto; padding:18px 16px 64px; }
+    .nav { display:flex; gap:8px; overflow:auto; margin:0 0 14px; }
+    .nav a { flex:0 0 auto; color:#111; background:var(--lime); text-decoration:none; font-size:11px; font-weight:800; text-transform:uppercase; padding:8px 12px; border-radius:999px; }
+    .nav a.dim { background:#16161c; color:#cfcfcf; border:1px solid #2a2a32; }
+    .livebar { display:flex; align-items:center; justify-content:space-between; background:#0b0b0b; border:1px solid #1d1d1d; border-radius:999px; padding:8px 12px; margin-bottom:18px; font-size:12px; color:#bbb; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#3dff6e; box-shadow:0 0 10px #3dff6e; animation:blink 1.4s infinite; }
+    .hero { text-align:center; margin-bottom:16px; }
+    .art { width:176px; height:176px; margin:0 auto 14px; border-radius:30px; overflow:hidden; border:1px solid rgba(212,255,0,.4); animation:float 3.2s ease-in-out infinite; background:#070707; }
+    .art svg { width:100%; height:100%; display:block; }
+    .logo { font-family:Orbitron,sans-serif; font-weight:800; letter-spacing:.2em; font-size:26px; }
+    .sub { color:#8d8d8d; margin-top:8px; font-size:13.5px; line-height:1.5; }
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 12px; }
+    .stat { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
+    .stat span { display:block; color:#8a8a8a; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .stat b { display:block; margin-top:6px; font-size:22px; color:var(--lime); font-family:Orbitron,sans-serif; }
+    .stat.full b { color:#ff5d5d; }
+    .rail { display:flex; gap:6px; margin:4px 0 16px; }
+    .rail i { flex:1; height:4px; border-radius:99px; background:#1b1b1b; }
+    .rail i.on { background:var(--lime); }
+    .card { display:none; background:var(--card); border:1px solid var(--line); border-radius:22px; padding:18px; margin-bottom:12px; }
+    .card.show, .card.always { display:block; }
+    .card.done-card { opacity:.7; }
+    .kicker { color:var(--lime); font-size:11px; letter-spacing:.16em; font-weight:700; text-transform:uppercase; margin-bottom:6px; }
+    h2 { font-size:20px; margin-bottom:8px; }
+    .info { color:#9a9a9a; font-size:13.5px; line-height:1.55; margin-bottom:14px; }
+    button,.btn { display:block; width:100%; border:0; border-radius:14px; padding:14px 16px; font-size:14.5px; font-weight:800; cursor:pointer; text-align:center; text-decoration:none; font-family:Outfit,sans-serif; }
+    .primary { background:var(--lime); color:#111; }
+    .ghost { background:#141414; color:#fff; border:1px solid #2c2c2c; margin-top:8px; }
+    .okbtn { background:#143018; color:#b9f7c8; border:1px solid #1f6b38; }
+    button:disabled { opacity:.5; }
+    label { display:block; margin:12px 0 6px; font-size:12px; font-weight:700; color:#cfcfcf; }
+    input { width:100%; padding:13px 14px; border-radius:12px; border:1px solid #2c2c2c; background:#101010; color:#fff; font-size:14px; }
+    .wallet { font-size:13px; color:var(--lime); word-break:break-all; margin-top:10px; }
+    .refbox { background:#090909; border:1px dashed #333; border-radius:14px; padding:12px; font-size:13px; word-break:break-all; margin-top:12px; }
+    .board div { display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid #1d1d1d; font-size:13px; color:#ccc; }
+    .msg { display:none; margin-top:12px; padding:11px 12px; border-radius:12px; font-size:13px; }
+    .msg.ok { display:block; background:#0f2a16; border:1px solid #1f6b38; color:#b8f5cc; }
+    .msg.err { display:block; background:#2a1010; border:1px solid #7a2a2a; color:#ffb3b3; }
+    .foot { text-align:center; color:#555; font-size:11px; margin-top:18px; }
+    .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+    .mini { background:#0c0c10; border:1px solid #26262e; border-radius:14px; padding:10px 8px; text-align:center; }
+    .mini b { display:block; color:var(--lime); font-size:16px; margin-top:4px; }
+    .mini span { color:#888; font-size:10px; text-transform:uppercase; }
+    .faq p { color:#9a9a9a; font-size:13px; margin:0 0 12px; }
+    .faq strong { color:#fff; display:block; margin-bottom:4px; }
+    .pill { display:inline-block; background:#16180c; color:var(--lime); border:1px solid #3a4a10; border-radius:999px; padding:4px 10px; font-size:11px; font-weight:700; margin-top:8px; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <a href="#step-connect">Verify</a>
+      <a class="dim" href="#earn">Earn 20%</a>
+      <a class="dim" href="#board-card">Live board</a>
+      <a class="dim" href="#faq">FAQ</a>
+    </div>
+    <div class="livebar"><div style="display:flex;align-items:center;gap:8px;font-weight:700"><span class="dot"></span> LIVE VERIFY</div><div id="live-line">0 wallets joined</div></div>
+    <div class="hero">
+      <div class="art"><svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="180" fill="#070707"/><circle cx="90" cy="92" r="60" fill="none" stroke="#d4ff00" stroke-width="2" opacity=".35"><animate attributeName="r" values="54;66;54" dur="2.6s" repeatCount="indefinite"/></circle><path d="M46 154 C46 90 58 44 90 44 C122 44 134 90 134 154 Z" fill="#0b0b0b" stroke="#d4ff00" stroke-width="3"/><path d="M63 78 C63 61 74 52 90 52 C106 52 117 61 117 78 C117 99 107 110 90 110 C73 110 63 99 63 78 Z" fill="#050505"/><ellipse cx="76" cy="82" rx="7.5" ry="4.2" fill="#d4ff00"/><ellipse cx="104" cy="82" rx="7.5" ry="4.2" fill="#d4ff00"/></svg></div>
+      <div class="logo">VEYROHOOD</div>
+      <p class="sub">10,000 hoods on Robinhood Chain. Finish every level, pay $0.25, get approved on-chain. First 1,000 verified wallets are OG.</p>
+      <div class="pill" id="ref-banner" style="display:none;">Referral link detected</div>
+    </div>
+    <div class="stats">
+      <div class="stat" id="og-box"><span>OG spots</span><b id="og-count">0 / 1000</b></div>
+      <div class="stat"><span>Joined live</span><b id="joined-count">0</b></div>
+    </div>
+    <div class="rail" id="rail"></div>
+    <div class="card show always" id="how"><div class="kicker">How it works</div><h2>7 levels. One payment.</h2><p class="info">Connect wallet → follow → Discord → quote → reply → handles → pay $0.25. Confirmed payment = auto approved.</p><div class="grid3"><div class="mini"><span>Fee</span><b>$0.25</b></div><div class="mini"><span>Your cut</span><b>80%</b></div><div class="mini"><span>Refer cut</span><b>20%</b></div></div></div>
+    <div class="card show always" id="earn"><div class="kicker">Referral desk</div><h2>Share. Earn $0.05 each.</h2><p class="info">After verify, copy your link. Each paid join via that link credits $0.05. Withdraw unlocks at $2 (40 refs). Until the pool contract is live, withdraw sends a payout request.</p></div>
+    <div class="card show" id="step-connect"><div class="kicker">Level 1</div><h2>Connect wallet</h2><p class="info">MetaMask, Rabby, OKX or Trust. Switches to Robinhood Chain.</p><button class="primary" id="connect-btn" type="button">CONNECT WALLET</button><div class="wallet" id="wallet-line"></div></div>
+    <div class="card" id="step-follow"><div class="kicker">Level 2</div><h2>Follow @VeyroHood</h2><a class="btn primary" id="t-follow" href="https://x.com/VeyroHood" target="_blank" rel="noopener">OPEN X AND FOLLOW</a></div>
+    <div class="card" id="step-discord"><div class="kicker">Level 3</div><h2>Join Discord</h2><a class="btn primary" id="t-discord" href="https://discord.gg/6CYd3ewU5" target="_blank" rel="noopener">OPEN DISCORD</a></div>
+    <div class="card" id="step-quote"><div class="kicker">Level 4</div><h2>Quote the pinned post</h2><a class="btn ghost" id="t-quote" href="https://x.com/VeyroHood/status/2095434542094115048" target="_blank" rel="noopener">OPEN PINNED POST</a><label>Your quote link</label><input id="quote_link" placeholder="https://x.com/yourname/status/..."><button class="primary" id="quote-next" type="button" style="margin-top:12px;">CONTINUE</button></div>
+    <div class="card" id="step-reply"><div class="kicker">Level 5</div><h2>Reply to the pinned post</h2><a class="btn ghost" id="t-reply" href="https://x.com/VeyroHood/status/2095434542094115048" target="_blank" rel="noopener">OPEN PINNED POST</a><label>Your reply link</label><input id="reply_link" placeholder="https://x.com/yourname/status/..."><button class="primary" id="reply-next" type="button" style="margin-top:12px;">CONTINUE</button></div>
+    <div class="card" id="step-ids"><div class="kicker">Level 6</div><h2>Your handles</h2><label>X username</label><input id="x_username" placeholder="@username"><label>Discord username</label><input id="discord_username" placeholder="username"><button class="primary" id="ids-next" type="button" style="margin-top:14px;">UNLOCK PAYMENT</button></div>
+    <div class="card" id="step-pay"><div class="kicker">Final level</div><h2>Verify with $0.25</h2><p class="info">Pay about $0.25 ETH on Robinhood Chain. 80% to treasury. Referral link credits 20% ($0.05).</p><button class="primary" id="pay-btn" type="button">PAY $0.25 AND VERIFY</button><div id="pay-msg" class="msg"></div><div id="ref-wrap" style="display:none;"><div class="refbox">Approved.<br>Your live referral link:<br><b id="ref-link"></b></div><button class="ghost" id="copy-ref" type="button">COPY REFERRAL LINK</button><div class="wallet" id="earn-line">Referrals: 0 · Balance: $0.00</div><button class="primary" id="withdraw-btn" type="button" style="margin-top:12px;display:none;">WITHDRAW TO WALLET</button><div id="wd-msg" class="msg"></div></div></div>
+    <div class="card show" id="board-card"><div class="kicker">Live</div><h2>Referral leaderboard</h2><p class="info">Updates every 5 seconds.</p><div class="board" id="board"><div>No referrals yet</div></div></div>
+    <div class="card show always faq" id="faq"><div class="kicker">FAQ</div><h2>Before you pay</h2><p><strong>Where does $0.25 go?</strong>On-chain to treasury. 80% project, 20% referrer credit if ?ref= was used.</p><p><strong>Are social tasks auto-checked?</strong>No. You open links and paste proof. Payment is the gate.</p><p><strong>When can I withdraw?</strong>$2 = 40 refs. Auto send needs the contract later. Button now creates a request.</p></div>
+    <div class="foot">© 2026 VeyroHood · Robinhood Chain · 80 / 20</div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script>
+    const SUPABASE_URL = "https://aqbqllhphgcoodwsuyxb.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_Hx8wed6eGovCev04zrcSgw_UUNKixT3";
+    const TABLE_NAME = "submissions";
+    const TREASURY = "0xf6F80827cBAf83798c7763FCd915C0068F2bE60C";
+    const CHAIN_ID = 4663, CHAIN_HEX = "0x1237", FEE_USD = 0.25, REF_USD = 0.05, WD_MIN = 2, OG_CAP = 1000;
+    const SITE = location.origin + location.pathname.replace(/index\.html$/, "");
+    const STEPS = ["connect","follow","discord","quote","reply","ids","pay"];
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let userWallet = null, provider = null, stepIndex = 0;
+    const done = { follow:false, discord:false, quote:false, reply:false };
+    const $ = (id) => document.getElementById(id);
+    function showMsg(el, type, text) { el.className = "msg " + (type === "ok" ? "ok" : "err"); el.textContent = text; }
+    function shortAddr(a) { return a.slice(0,6) + "..." + a.slice(-4); }
+    function xLinkOk(v) { return /^https?:\/\/(www\.)?(x\.com|twitter\.com)\//i.test((v||"").trim()); }
+    function refFromUrl() { const r = (new URLSearchParams(location.search).get("ref") || "").trim().toLowerCase(); return /^0x[a-f0-9]{40}$/.test(r) ? r : ""; }
+    function renderRail() { $("rail").innerHTML = STEPS.map((_, i) => "<i class='" + (i <= stepIndex ? "on" : "") + "'></i>").join(""); }
+    function showStep(name) { stepIndex = Math.max(stepIndex, STEPS.indexOf(name)); STEPS.forEach((key, i) => { const el = $("step-" + key); if (!el) return; if (i <= stepIndex) el.classList.add("show"); if (i < stepIndex) el.classList.add("done-card"); }); renderRail(); }
+    function markOpen(key, el, next) { done[key] = true; el.className = "btn okbtn"; setTimeout(() => showStep(next), 600); }
+    $("t-follow").addEventListener("click", function(){ markOpen("follow", this, "discord"); });
+    $("t-discord").addEventListener("click", function(){ markOpen("discord", this, "quote"); });
+    $("t-quote").addEventListener("click", function(){ this.className="btn okbtn"; this.textContent="POST OPENED"; });
+    $("t-reply").addEventListener("click", function(){ this.className="btn okbtn"; this.textContent="POST OPENED"; });
+    $("quote-next").addEventListener("click", function(){ if (!xLinkOk($("quote_link").value)) return alert("Paste a valid X quote link."); done.quote = true; showStep("reply"); });
+    $("reply-next").addEventListener("click", function(){ if (!xLinkOk($("reply_link").value)) return alert("Paste a valid X reply link."); done.reply = true; showStep("ids"); });
+    $("ids-next").addEventListener("click", function(){ if (!$("x_username").value.trim() || !$("discord_username").value.trim()) return alert("Enter both usernames."); showStep("pay"); });
+    async function switchChain() { try { await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId: CHAIN_HEX }] }); } catch (e) { if (e.code === 4902) { await window.ethereum.request({ method:"wallet_addEthereumChain", params:[{ chainId: CHAIN_HEX, chainName:"Robinhood Chain", nativeCurrency:{ name:"ETH", symbol:"ETH", decimals:18 }, rpcUrls:["https://rpc.mainnet.chain.robinhood.com"], blockExplorerUrls:["https://robinhoodchain.blockscout.com"] }] }); } else throw e; } }
+    $("connect-btn").addEventListener("click", async function(){ try { if (!window.ethereum) return alert("No EVM wallet found."); provider = new ethers.BrowserProvider(window.ethereum); await switchChain(); const accs = await provider.send("eth_requestAccounts", []); userWallet = ethers.getAddress(accs[0]); $("wallet-line").textContent = "Connected: " + userWallet; $("connect-btn").textContent = "WALLET CONNECTED"; $("connect-btn").className = "okbtn"; showStep("follow"); await loadMine(); } catch (e) { alert(e.message || "Wallet connect failed"); } });
+    async function feeWei() { const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"); const px = Number((await r.json()).ethereum.usd); return ethers.parseEther((FEE_USD / px).toFixed(8)); }
+    function schemaMissing(err) { const m = ((err && err.message) || "").toLowerCase(); return m.includes("schema cache") || m.includes("could not find") || m.includes("column"); }
+    async function saveSubmission(row) { let payload = Object.assign({}, row); let { error } = await db.from(TABLE_NAME).insert(payload); if (error && schemaMissing(error) && "referrer" in payload) { delete payload.referrer; ({ error } = await db.from(TABLE_NAME).insert(payload)); } if (error && schemaMissing(error) && "tx_hash" in payload) { delete payload.tx_hash; ({ error } = await db.from(TABLE_NAME).insert(payload)); } if (error && schemaMissing(error) && "role" in payload) { delete payload.role; ({ error } = await db.from(TABLE_NAME).insert(payload)); } if (error) throw error; }
+    $("pay-btn").addEventListener("click", async function(){ if (!userWallet) return showMsg($("pay-msg"), "err", "Connect wallet first."); if (!done.follow || !done.discord || !xLinkOk($("quote_link").value) || !xLinkOk($("reply_link").value)) return showMsg($("pay-msg"), "err", "Finish every level first."); if (!$("x_username").value.trim() || !$("discord_username").value.trim()) return showMsg($("pay-msg"), "err", "Enter X and Discord usernames."); $("pay-btn").disabled = true; try { const existingQ = await db.from(TABLE_NAME).select("wallet,status,role").ilike("wallet", userWallet).maybeSingle(); if (existingQ.data && existingQ.data.status === "approved") { afterApprove(userWallet); showMsg($("pay-msg"), "ok", "Already verified."); return; } await switchChain(); const signer = await provider.getSigner(); const net = await provider.getNetwork(); if (Number(net.chainId) !== CHAIN_ID) throw new Error("Switch to Robinhood Chain."); const tx = await signer.sendTransaction({ to: TREASURY, value: await feeWei() }); const rec = await tx.wait(); if (!rec || rec.status !== 1) throw new Error("Transaction failed."); let ogNow = 0; try { const ogQ = await db.from(TABLE_NAME).select("*", { count:"exact", head:true }).eq("status","approved").eq("role","OG"); ogNow = ogQ.count || 0; } catch (_) {} const role = ogNow < OG_CAP ? "OG" : "RANDOM"; const referrer = refFromUrl() && refFromUrl() !== userWallet.toLowerCase() ? refFromUrl() : null; await saveSubmission({ x_username: $("x_username").value.trim().replace(/^@+/, ""), discord_username: $("discord_username").value.trim(), wallet: userWallet, quote_link: $("quote_link").value.trim(), reply_link: $("reply_link").value.trim(), tx_hash: rec.hash, referrer: referrer, status: "approved", role: role }); afterApprove(userWallet); showMsg($("pay-msg"), "ok", role === "OG" ? "Verified. You are OG." : "Verified. Random pool."); await loadStats(); await loadBoard(); } catch (e) { showMsg($("pay-msg"), "err", e.message || "Verify failed."); } finally { $("pay-btn").disabled = false; $("pay-btn").textContent = "PAY $0.25 AND VERIFY"; } });
+    function afterApprove(wallet) { $("ref-wrap").style.display = "block"; $("ref-link").textContent = SITE + "?ref=" + wallet.toLowerCase(); showStep("pay"); loadMine(); }
+    $("copy-ref").addEventListener("click", async function(){ const link = $("ref-link").textContent; try { await navigator.clipboard.writeText(link); this.textContent = "COPIED"; } catch(_) { prompt("Copy link", link); } });
+    async function pendingWithdraw(wallet) { try { const { data } = await db.from("withdraw_requests").select("id,status,amount_usd").eq("wallet", wallet.toLowerCase()).in("status", ["pending","paid"]); return data || []; } catch (_) { return []; } }
+    async function loadMine() { if (!userWallet) return; try { const { data } = await db.from(TABLE_NAME).select("status,role,wallet").ilike("wallet", userWallet).maybeSingle(); if (data && data.status === "approved") { $("ref-wrap").style.display = "block"; $("ref-link").textContent = SITE + "?ref=" + userWallet.toLowerCase(); showStep("pay"); } } catch (_) {} try { const { count } = await db.from(TABLE_NAME).select("*", { count:"exact", head:true }).eq("status","approved").eq("referrer", userWallet.toLowerCase()); const refs = count || 0; const earned = refs * REF_USD; const reqs = await pendingWithdraw(userWallet); const reserved = reqs.reduce((s, r) => s + Number(r.amount_usd || 0), 0); const available = Math.max(0, earned - reserved); $("earn-line").textContent = "Referrals: " + refs + " · Earned: $" + earned.toFixed(2) + " · Available: $" + available.toFixed(2); const btn = $("withdraw-btn"); btn.style.display = "block"; if (available + 1e-9 >= WD_MIN) { btn.disabled = false; btn.textContent = "WITHDRAW $" + available.toFixed(2); } else { btn.disabled = true; btn.textContent = "WITHDRAW AT $2 · now $" + available.toFixed(2); } } catch (_) {} }
+    $("withdraw-btn").addEventListener("click", async function(){ if (!userWallet) return; this.disabled = true; try { const { count } = await db.from(TABLE_NAME).select("*", { count:"exact", head:true }).eq("status","approved").eq("referrer", userWallet.toLowerCase()); const earned = (count || 0) * REF_USD; const reqs = await pendingWithdraw(userWallet); const reserved = reqs.reduce((s, r) => s + Number(r.amount_usd || 0), 0); const available = Math.max(0, earned - reserved); if (available < WD_MIN) throw new Error("Need $2 available."); const { error } = await db.from("withdraw_requests").insert({ wallet: userWallet.toLowerCase(), amount_usd: Number(available.toFixed(2)), status: "pending" }); if (error) throw error; showMsg($("wd-msg"), "ok", "Withdraw request sent to treasury."); await loadMine(); } catch (e) { showMsg($("wd-msg"), "err", e.message || "Withdraw failed."); this.disabled = false; } });
+    async function loadStats() { try { const joinedQ = await db.from(TABLE_NAME).select("*", { count:"exact", head:true }).eq("status","approved"); const joined = joinedQ.count || 0; $("joined-count").textContent = joined; $("live-line").textContent = joined + " wallets joined"; } catch (_) {} try { const ogQ = await db.from(TABLE_NAME).select("*", { count:"exact", head:true }).eq("status","approved").eq("role","OG"); const og = ogQ.count || 0; if (og >= OG_CAP) { $("og-box").classList.add("full"); $("og-count").textContent = "OG FULL"; } else $("og-count").textContent = og + " / " + OG_CAP; } catch (_) {} }
+    async function loadBoard() { try { const { data, error } = await db.from(TABLE_NAME).select("referrer").eq("status","approved").not("referrer","is",null); if (error) throw error; const map = {}; (data || []).forEach((row) => { if (row.referrer) map[row.referrer] = (map[row.referrer] || 0) + 1; }); const rows = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,15); $("board").innerHTML = rows.length ? rows.map((r,i)=>"<div><span>"+(i+1)+". "+shortAddr(r[0])+"</span><span>"+r[1]+" refs · $"+(r[1]*REF_USD).toFixed(2)+"</span></div>").join("") : "<div>No referrals yet</div>"; } catch (_) { $("board").innerHTML = "<div>Add the referrer column to unlock the board</div>"; } }
+    if (refFromUrl()) { $("ref-banner").style.display = "inline-block"; $("ref-banner").textContent = "Joined via " + shortAddr(refFromUrl()); }
+    renderRail(); loadStats(); loadBoard();
+    setInterval(() => { loadStats(); loadBoard(); if (userWallet) loadMine(); }, 5000);
+  </script>
+</body>
+</html>
