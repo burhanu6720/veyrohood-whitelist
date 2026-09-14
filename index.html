@@ -3,246 +3,369 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VeyroHood — Whitelist</title>
+  <title>VeyroHood — Verify</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Arial, sans-serif;
-      background: #090909;
-      color: white;
+      background: #050505;
+      color: #fff;
       min-height: 100vh;
-      padding: 25px 15px;
+      padding: 20px 14px 40px;
     }
-    .container { max-width: 650px; margin: auto; }
-    .logo {
-      text-align: center;
-      font-size: 34px;
-      font-weight: 900;
-      letter-spacing: 4px;
-      margin-top: 30px;
+    .container { max-width: 640px; margin: auto; }
+    .hero { text-align: center; margin-bottom: 22px; }
+    .art-wrap {
+      width: 180px; height: 180px; margin: 8px auto 16px;
+      border-radius: 24px; overflow: hidden;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 0 36px rgba(204,255,0,.22);
+      animation: floatGlow 3s ease-in-out infinite;
+      background: #ccff00;
     }
-    .subtitle {
-      text-align: center;
-      color: #999;
-      margin-top: 10px;
-      margin-bottom: 35px;
+    .art-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .logo { font-size: 30px; font-weight: 900; letter-spacing: 4px; }
+    .subtitle { color: #9a9a9a; margin-top: 8px; font-size: 14px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat {
+      background: #111; border: 1px solid #2a2a2a; border-radius: 14px;
+      padding: 14px; text-align: center;
     }
+    .stat b { display: block; font-size: 20px; color: #ccff00; margin-top: 4px; }
+    .stat.full b { color: #ff5a5a; }
     .card {
-      background: #111;
-      border: 1px solid #292929;
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 0 30px rgba(255,255,255,0.04);
+      background: #111; border: 1px solid #2a2a2a; border-radius: 18px;
+      padding: 18px; margin-bottom: 14px;
     }
-    h2 { margin-bottom: 8px; }
-    .info {
-      color: #999;
-      font-size: 14px;
-      margin-bottom: 25px;
-      line-height: 1.5;
+    h2 { font-size: 18px; margin-bottom: 8px; }
+    .info { color: #999; font-size: 13px; line-height: 1.5; margin-bottom: 14px; }
+    button, .btn {
+      display: block; width: 100%; border: 0; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 800; cursor: pointer;
+      text-align: center; text-decoration: none;
     }
-    label {
-      display: block;
-      margin: 18px 0 8px;
-      font-size: 14px;
-      font-weight: bold;
-    }
+    .primary { background: #ccff00; color: #000; }
+    .secondary { background: #1b1b1b; color: #fff; border: 1px solid #333; margin-top: 8px; }
+    .done { background: #163016; color: #b8f5cc; border: 1px solid #1f6b38; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    label { display: block; margin: 12px 0 6px; font-size: 13px; font-weight: 700; }
     input {
-      width: 100%;
-      padding: 14px;
-      background: #191919;
-      border: 1px solid #333;
-      border-radius: 10px;
-      color: white;
-      outline: none;
-      font-size: 15px;
+      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333;
+      background: #191919; color: #fff; font-size: 14px;
     }
-    input:focus { border-color: white; }
-    button {
-      width: 100%;
-      margin-top: 25px;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: white;
-      color: black;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+    .wallet { font-size: 13px; color: #ccff00; word-break: break-all; margin-top: 10px; }
+    .task { margin-bottom: 8px; }
+    .refbox {
+      background: #0c0c0c; border: 1px dashed #333; border-radius: 10px;
+      padding: 12px; font-size: 13px; word-break: break-all; margin-top: 10px;
     }
-    button:hover { opacity: 0.85; }
-    button:disabled { opacity: 0.55; cursor: not-allowed; }
-    .requirements {
-      margin-top: 25px;
-      padding: 18px;
-      background: #0c0c0c;
-      border-radius: 12px;
-      border: 1px solid #222;
+    .board div {
+      display: flex; justify-content: space-between; padding: 8px 0;
+      border-bottom: 1px solid #222; font-size: 13px; color: #ccc;
     }
-    .requirements p { margin: 8px 0; color: #bbb; font-size: 14px; }
-    .requirements a { color: #fff; text-decoration: underline; }
-    .footer {
-      text-align: center;
-      color: #666;
-      margin-top: 30px;
-      font-size: 13px;
+    .msg { display: none; margin-top: 12px; padding: 10px 12px; border-radius: 10px; font-size: 13px; }
+    .msg.ok { display: block; background: #0f2a16; border: 1px solid #1f6b38; color: #b8f5cc; }
+    .msg.err { display: block; background: #2a1010; border: 1px solid #7a2a2a; color: #ffb3b3; }
+    .footer { text-align: center; color: #666; font-size: 12px; margin-top: 18px; }
+    @keyframes floatGlow {
+      0%,100% { transform: translateY(0); box-shadow: 0 0 20px rgba(204,255,0,.12); }
+      50% { transform: translateY(-7px); box-shadow: 0 0 42px rgba(204,255,0,.3); }
     }
-    .message {
-      display: none;
-      margin-top: 16px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .message.success {
-      display: block;
-      background: #0f2a16;
-      border: 1px solid #1f6b38;
-      color: #b8f5cc;
-    }
-    .message.error {
-      display: block;
-      background: #2a1010;
-      border: 1px solid #7a2a2a;
-      color: #ffb3b3;
-    }
-    .hint { color: #777; font-size: 12px; font-weight: normal; margin-top: 6px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="logo">VEYROHOOD</div>
-    <div class="subtitle">Join the Hood. Secure your spot.</div>
+    <div class="hero">
+      <div class="art-wrap"><img src="art.gif" alt="VeyroHood"></div>
+      <div class="logo">VEYROHOOD</div>
+      <div class="subtitle">10,000 NFTs on Robinhood Chain. First 1,000 verified wallets are guaranteed OG.</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat" id="og-box">OG spots<b id="og-count">0 / 1000</b></div>
+      <div class="stat">Joined<b id="joined-count">0</b></div>
+    </div>
 
     <div class="card">
-      <h2>Whitelist Registration</h2>
-      <p class="info">
-        Complete the requirements below and submit your information
-        for manual verification.
-      </p>
+      <h2>1. Connect wallet</h2>
+      <p class="info">Use MetaMask, Rabby, OKX, Trust, or any injected EVM wallet. Network switches to Robinhood Chain.</p>
+      <button class="primary" id="connect-btn" type="button">CONNECT WALLET</button>
+      <div class="wallet" id="wallet-line"></div>
+    </div>
 
-      <form id="whitelist-form">
-        <label for="x_username">X Username</label>
-        <input id="x_username" name="x_username" type="text" placeholder="@yourusername" required>
+    <div class="card" id="task-card" style="opacity:.45;pointer-events:none;">
+      <h2>2. Complete missions</h2>
+      <p class="info">Open each task, finish it, then mark it done. Payment unlocks after all four.</p>
+      <div class="task"><a class="btn secondary" id="t-follow" href="https://x.com/VeyroHood" target="_blank" rel="noopener">Follow @VeyroHood</a></div>
+      <div class="task"><a class="btn secondary" id="t-discord" href="https://discord.gg/6CYd3ewU5" target="_blank" rel="noopener">Join Discord</a></div>
+      <div class="task"><a class="btn secondary" id="t-quote" href="https://x.com/VeyroHood/status/2095434542094115048" target="_blank" rel="noopener">Quote pinned post</a></div>
+      <div class="task"><a class="btn secondary" id="t-reply" href="https://x.com/VeyroHood/status/2095434542094115048" target="_blank" rel="noopener">Reply to pinned post</a></div>
+      <label>X username</label>
+      <input id="x_username" placeholder="@username">
+      <label>Discord username</label>
+      <input id="discord_username" placeholder="username">
+      <label>Your quote link</label>
+      <input id="quote_link" placeholder="https://x.com/...">
+      <label>Your reply link</label>
+      <input id="reply_link" placeholder="https://x.com/...">
+    </div>
 
-        <label for="discord_username">Discord Username</label>
-        <input id="discord_username" name="discord_username" type="text" placeholder="yourdiscord" required>
-
-        <label for="wallet">EVM Wallet Address</label>
-        <input id="wallet" name="wallet" type="text" placeholder="0x..." required>
-
-        <label for="quote_link">Quote Link</label>
-        <input id="quote_link" name="quote_link" type="url" placeholder="https://x.com/..." required>
-        <p class="hint">Quote the pinned post, then paste your quote post link here.</p>
-
-        <label for="reply_link">Reply Link</label>
-        <input id="reply_link" name="reply_link" type="url" placeholder="https://x.com/..." required>
-        <p class="hint">Reply to the pinned post, then paste your reply link here.</p>
-
-        <div id="form-message" class="message"></div>
-
-        <button id="submit-btn" type="submit">SUBMIT FOR VERIFICATION</button>
-      </form>
-
-      <div class="requirements">
-        <strong>Requirements</strong>
-        <p>✓ <a href="https://x.com/VeyroHood" target="_blank" rel="noopener noreferrer">Follow @VeyroHood on X</a></p>
-        <p>✓ <a href="https://discord.gg/6CYd3ewU5" target="_blank" rel="noopener noreferrer">Join the VeyroHood Discord</a></p>
-        <p>✓ <a href="https://x.com/VeyroHood/status/2095434542094115048" target="_blank" rel="noopener noreferrer">Quote the pinned post</a></p>
-        <p>✓ <a href="https://x.com/VeyroHood/status/2095434542094115048" target="_blank" rel="noopener noreferrer">Reply to the pinned post</a></p>
-        <p>✓ Submit your EVM wallet</p>
+    <div class="card" id="pay-card" style="opacity:.45;pointer-events:none;">
+      <h2>3. Verify with $0.25</h2>
+      <p class="info">Pay about $0.25 in ETH on Robinhood Chain. After the transaction confirms, you are approved automatically. First 1,000 approved wallets get OG. The rest enter the random pool. Payment does not guarantee one of the remaining 9,000 spots.</p>
+      <button class="primary" id="pay-btn" type="button">PAY $0.25 AND VERIFY</button>
+      <div id="pay-msg" class="msg"></div>
+      <div id="ref-wrap" style="display:none;">
+        <div class="refbox">
+          Approved.<br>
+          Your referral link:<br>
+          <b id="ref-link"></b>
+        </div>
+        <p class="info" style="margin-top:10px;">You earn 20% ($0.05) when someone verifies through your link. Withdraw opens at $2.</p>
+        <div class="wallet" id="earn-line">Earnings: $0.00</div>
       </div>
     </div>
 
-    <div class="footer">© 2026 VeyroHood. All rights reserved.</div>
+    <div class="card">
+      <h2>Referral leaderboard</h2>
+      <p class="info">Live count of verified referrals. Updates when the page loads.</p>
+      <div class="board" id="board"><div>No referrals yet</div></div>
+    </div>
+
+    <div class="footer">© 2026 VeyroHood. Verification fee is paid on Robinhood Chain.</div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
   <script>
     const SUPABASE_URL = "https://aqbqllhphgcoodwsuyxb.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Hx8wed6eGovCev04zrcSgw_UUNKixT3";
     const TABLE_NAME = "submissions";
+    const TREASURY = "0xf6F80827cBAf83798c7763FCd915C0068F2bE60C";
+    const CHAIN_ID = 4663;
+    const CHAIN_HEX = "0x1237";
+    const FEE_USD = 0.25;
+    const OG_CAP = 1000;
+    const SITE = location.origin + location.pathname.replace(/index\.html$/, "");
 
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const tasks = { follow: false, discord: false, quote: false, reply: false };
+    let userWallet = null;
+    let provider = null;
 
-    const form = document.getElementById("whitelist-form");
-    const messageBox = document.getElementById("form-message");
-    const submitBtn = document.getElementById("submit-btn");
+    const $ = (id) => document.getElementById(id);
 
-    function showMessage(type, text) {
-      messageBox.className = "message " + type;
-      messageBox.textContent = text;
+    function show(el, type, text) {
+      el.className = "msg " + (type === "ok" ? "ok" : "err");
+      el.textContent = text;
     }
 
-    function cleanText(value) {
-      return (value || "").trim();
+    function shortAddr(a) {
+      return a.slice(0, 6) + "..." + a.slice(-4);
     }
 
-    function cleanUsername(value) {
-      return cleanText(value).replace(/^@+/, "");
+    function refFromUrl() {
+      const q = new URLSearchParams(location.search);
+      const r = (q.get("ref") || "").trim().toLowerCase();
+      if (/^0x[a-f0-9]{40}$/.test(r)) return r;
+      return "";
     }
 
-    function isValidWallet(wallet) {
-      return /^0x[a-fA-F0-9]{40}$/.test(wallet);
+    function markTask(key, el) {
+      tasks[key] = true;
+      el.className = "btn done";
+      el.textContent = el.textContent.replace(/^Follow|^Join|^Quote|^Reply/, "Done ·");
+      unlockPay();
     }
 
-    function isXLink(url) {
-      return /^https?:\/\/(www\.)?(x\.com|twitter\.com)\//i.test(url);
-    }
-
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      const xUsername = cleanUsername(document.getElementById("x_username").value);
-      const discordUsername = cleanText(document.getElementById("discord_username").value);
-      const wallet = cleanText(document.getElementById("wallet").value);
-      const quoteLink = cleanText(document.getElementById("quote_link").value);
-      const replyLink = cleanText(document.getElementById("reply_link").value);
-
-      if (!xUsername || !discordUsername || !wallet || !quoteLink || !replyLink) {
-        showMessage("error", "Please fill in all fields.");
-        return;
-      }
-
-      if (!isValidWallet(wallet)) {
-        showMessage("error", "Invalid EVM wallet. Use a 0x address.");
-        return;
-      }
-
-      if (!isXLink(quoteLink) || !isXLink(replyLink)) {
-        showMessage("error", "Quote Link and Reply Link must be x.com or twitter.com links.");
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "SUBMITTING...";
-      showMessage("success", "Submitting...");
-
-      const { error } = await db.from(TABLE_NAME).insert({
-        x_username: xUsername,
-        discord_username: discordUsername,
-        wallet: wallet,
-        quote_link: quoteLink,
-        reply_link: replyLink,
-        status: "pending",
-        role: null
+    ["follow", "discord", "quote", "reply"].forEach((key) => {
+      $("t-" + key).addEventListener("click", function () {
+        markTask(key, this);
       });
-
-      if (error) {
-        console.error(error);
-        submitBtn.disabled = false;
-        submitBtn.textContent = "SUBMIT FOR VERIFICATION";
-        showMessage("error", "Submit failed. Please try again.");
-        return;
-      }
-
-      form.reset();
-      submitBtn.disabled = false;
-      submitBtn.textContent = "SUBMIT FOR VERIFICATION";
-      showMessage("success", "Submitted. Your entry is pending manual verification.");
     });
+
+    function missionsReady() {
+      return tasks.follow && tasks.discord && tasks.quote && tasks.reply
+        && $("x_username").value.trim()
+        && $("discord_username").value.trim()
+        && /^https?:\/\/(www\.)?(x\.com|twitter\.com)\//i.test($("quote_link").value.trim())
+        && /^https?:\/\/(www\.)?(x\.com|twitter\.com)\//i.test($("reply_link").value.trim());
+    }
+
+    function unlockPay() {
+      if (userWallet && missionsReady()) {
+        $("pay-card").style.opacity = "1";
+        $("pay-card").style.pointerEvents = "auto";
+      }
+    }
+
+    ["x_username", "discord_username", "quote_link", "reply_link"].forEach((id) => {
+      $(id).addEventListener("input", unlockPay);
+    });
+
+    async function switchChain() {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: CHAIN_HEX }]
+        });
+      } catch (e) {
+        if (e.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: CHAIN_HEX,
+              chainName: "Robinhood Chain",
+              nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+              rpcUrls: ["https://rpc.mainnet.chain.robinhood.com"],
+              blockExplorerUrls: ["https://robinhoodchain.blockscout.com"]
+            }]
+          });
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    $("connect-btn").addEventListener("click", async function () {
+      try {
+        if (!window.ethereum) {
+          alert("No EVM wallet found. Install MetaMask, Rabby, OKX, or Trust.");
+          return;
+        }
+        provider = new ethers.BrowserProvider(window.ethereum);
+        await switchChain();
+        const accs = await provider.send("eth_requestAccounts", []);
+        userWallet = ethers.getAddress(accs[0]);
+        $("wallet-line").textContent = "Connected: " + userWallet;
+        $("connect-btn").textContent = "WALLET CONNECTED";
+        $("task-card").style.opacity = "1";
+        $("task-card").style.pointerEvents = "auto";
+        unlockPay();
+        await loadMine();
+      } catch (e) {
+        alert(e.message || "Wallet connect failed");
+      }
+    });
+
+    async function ethPrice() {
+      const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+      const j = await r.json();
+      return Number(j.ethereum.usd);
+    }
+
+    async function feeWei() {
+      const px = await ethPrice();
+      const eth = FEE_USD / px;
+      return ethers.parseEther(eth.toFixed(8));
+    }
+
+    $("pay-btn").addEventListener("click", async function () {
+      if (!userWallet) return show($("pay-msg"), "err", "Connect wallet first.");
+      if (!missionsReady()) return show($("pay-msg"), "err", "Finish all missions and links first.");
+      $("pay-btn").disabled = true;
+      $("pay-btn").textContent = "CHECKING...";
+      try {
+        const { data: existing } = await db.from(TABLE_NAME).select("wallet,status,role").ilike("wallet", userWallet).maybeSingle();
+        if (existing && existing.status === "approved") {
+          afterApprove(userWallet);
+          show($("pay-msg"), "ok", "This wallet is already verified.");
+          return;
+        }
+
+        await switchChain();
+        const signer = await provider.getSigner();
+        const net = await provider.getNetwork();
+        if (Number(net.chainId) !== CHAIN_ID) throw new Error("Switch to Robinhood Chain.");
+
+        const value = await feeWei();
+        show($("pay-msg"), "ok", "Confirm $0.25 payment in your wallet...");
+        $("pay-btn").textContent = "CONFIRM IN WALLET";
+
+        const tx = await signer.sendTransaction({ to: TREASURY, value });
+        show($("pay-msg"), "ok", "Payment sent. Waiting for confirmation...");
+        $("pay-btn").textContent = "CONFIRMING...";
+        const rec = await tx.wait();
+        if (!rec || rec.status !== 1) throw new Error("Transaction failed.");
+
+        const paidFrom = ethers.getAddress(rec.from);
+        if (paidFrom !== userWallet) throw new Error("Payment must come from the connected wallet.");
+
+        const { count: ogNow } = await db.from(TABLE_NAME).select("*", { count: "exact", head: true }).eq("status", "approved").eq("role", "OG");
+        const role = (ogNow || 0) < OG_CAP ? "OG" : "RANDOM";
+        const referrer = refFromUrl() && refFromUrl() !== userWallet.toLowerCase() ? refFromUrl() : null;
+
+        const { error } = await db.from(TABLE_NAME).insert({
+          x_username: $("x_username").value.trim().replace(/^@+/, ""),
+          discord_username: $("discord_username").value.trim(),
+          wallet: userWallet,
+          quote_link: $("quote_link").value.trim(),
+          reply_link: $("reply_link").value.trim(),
+          tx_hash: rec.hash,
+          referrer: referrer,
+          status: "approved",
+          role: role
+        });
+        if (error) throw error;
+
+        afterApprove(userWallet);
+        show($("pay-msg"), "ok", role === "OG"
+          ? "Verified. You are OG. Guaranteed eligible."
+          : "Verified. OG is full. You are in the random pool.");
+        await loadStats();
+        await loadBoard();
+      } catch (e) {
+        show($("pay-msg"), "err", e.message || "Verify failed.");
+      } finally {
+        $("pay-btn").disabled = false;
+        $("pay-btn").textContent = "PAY $0.25 AND VERIFY";
+      }
+    });
+
+    function afterApprove(wallet) {
+      $("ref-wrap").style.display = "block";
+      $("ref-link").textContent = SITE + "?ref=" + wallet.toLowerCase();
+    }
+
+    async function loadMine() {
+      if (!userWallet) return;
+      const { data } = await db.from(TABLE_NAME).select("status,role,wallet").ilike("wallet", userWallet).maybeSingle();
+      if (data && data.status === "approved") afterApprove(userWallet);
+      const { count } = await db.from(TABLE_NAME).select("*", { count: "exact", head: true }).eq("status", "approved").eq("referrer", userWallet.toLowerCase());
+      const earn = (count || 0) * 0.05;
+      $("earn-line").textContent = "Referrals: " + (count || 0) + " · Earnings: $" + earn.toFixed(2) + (earn >= 2 ? " · Withdraw ready" : " · Withdraw at $2");
+    }
+
+    async function loadStats() {
+      const joinedQ = await db.from(TABLE_NAME).select("*", { count: "exact", head: true }).eq("status", "approved");
+      const ogQ = await db.from(TABLE_NAME).select("*", { count: "exact", head: true }).eq("status", "approved").eq("role", "OG");
+      const joined = joinedQ.count || 0;
+      const og = ogQ.count || 0;
+      $("joined-count").textContent = joined;
+      if (og >= OG_CAP) {
+        $("og-box").classList.add("full");
+        $("og-count").textContent = "OG FULL";
+      } else {
+        $("og-count").textContent = og + " / " + OG_CAP;
+      }
+    }
+
+    async function loadBoard() {
+      const { data } = await db.from(TABLE_NAME).select("referrer").eq("status", "approved").not("referrer", "is", null);
+      const map = {};
+      (data || []).forEach((row) => {
+        if (!row.referrer) return;
+        map[row.referrer] = (map[row.referrer] || 0) + 1;
+      });
+      const rows = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 15);
+      $("board").innerHTML = rows.length
+        ? rows.map((r, i) => "<div><span>" + (i + 1) + ". " + shortAddr(r[0]) + "</span><span>" + r[1] + " refs</span></div>").join("")
+        : "<div>No referrals yet</div>";
+    }
+
+    loadStats();
+    loadBoard();
   </script>
 </body>
-          </html>
+  </html>
+  
